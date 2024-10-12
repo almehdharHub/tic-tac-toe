@@ -3,10 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <script src="script2.js"></script>
+    <div class="container">
+      <h1>Tic-Tac-Toe</h1>
+      <div id="game-board" class="game-board">
+        <!-- The gameboard will be dynamically filled with squares using JS -->
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+      </div>
+      <div>
+        <input type="text" id="player1-name" placeholder="Player 1 Name" />
+        <input type="text" id="player2-name" placeholder="Player 2 Name" />
+      </div>
+      <button id="restart-button">Restart Game</button>
+      <div id="game-status"></div>
+    </div>
+    <!-- <script src="script2.js"></script> -->
+    <script src="webGame.js"></script>
   </body>
 </html>

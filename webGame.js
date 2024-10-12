@@ -1,6 +1,8 @@
 const gameBoard = (function () {
   let board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
+  const getBoard = () => board;
+
   const updateBoard = (position, mark) => {
     if (board[position - 1] !== "X" && board[position - 1] !== "O") {
       board[position - 1] = mark;
@@ -32,17 +34,18 @@ const gameBoard = (function () {
 
   function displayBoard() {
     return `
-      | ${board[0]} | ${board[1]} | ${board[2]} 
-      ----------
-      | ${board[3]} | ${board[4]} | ${board[5]} 
-      ----------
-      | ${board[6]} | ${board[7]} | ${board[8]}
-      `;
+        | ${board[0]} | ${board[1]} | ${board[2]} 
+        ----------
+        | ${board[3]} | ${board[4]} | ${board[5]} 
+        ----------
+        | ${board[6]} | ${board[7]} | ${board[8]}
+        `;
   }
   const resetBoard = () => {
     board = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
   };
   return {
+    getBoard,
     updateBoard,
     resetBoard,
     checkWin,
@@ -55,13 +58,13 @@ const Player = (name, mark) => {
   return { name, mark };
 };
 
-const playerX = Player("playerX", "X");
-const playerO = Player("playerO", "O");
+const playerX = Player("player 1", "X");
+const playerO = Player("player 2", "O");
 
 const gameController = (function () {
-  let currentPlayer;
   const player1 = playerX;
   const player2 = playerO;
+  let currentPlayer = player1;
   function startGame() {
     gameBoard.resetBoard();
     currentPlayer = player1;
@@ -73,18 +76,17 @@ const gameController = (function () {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
     console.log(gameBoard.displayBoard());
     console.log(`${currentPlayer.name} turn choose a number`);
-    playTurn();
   }
 
-  function playTurn() {
-    let playerChoice = prompt(
-      `${currentPlayer.name} turn choose a number (1-9):`
-    );
-    if (gameBoard.updateBoard(playerChoice, currentPlayer.mark)) {
+  function playTurn(position) {
+    let winner = document.getElementById("game-status");
+    if (gameBoard.updateBoard(position, currentPlayer.mark)) {
       if (gameBoard.checkWin(currentPlayer.mark)) {
+        winner.innerHTML = ` ${currentPlayer.name} wins`;
         console.log(`${currentPlayer.name} wins`);
         return true; // game over
       } else if (gameBoard.checkTie()) {
+        winner.innerHTML = `Tie game`;
         console.log("Tie game");
         return true; // game over
       } else {
@@ -94,7 +96,32 @@ const gameController = (function () {
       console.log("Invalid move. Try again.");
     }
   }
-  return { startGame };
+  return { startGame, playTurn };
 })();
 
+const domDisplay = (function () {
+  const boardElements = document.querySelectorAll(".cell");
+  function displayBoard(board) {
+    for (let i = 0; i < boardElements.length; i++) {
+      boardElements[i].innerHTML = board[i];
+    }
+  }
+  boardElements.forEach((cell, index) => {
+    cell.addEventListener("click", () => {
+      let playerChoice = index + 1;
+      gameController.playTurn(playerChoice);
+      displayBoard(gameBoard.getBoard());
+    });
+  });
+  const resetGame = document.getElementById("restart-button");
+  resetGame.addEventListener("click", () => {
+    gameBoard.resetBoard();
+    displayBoard(gameBoard.getBoard());
+    console.log(gameBoard.displayBoard());
+  });
+
+  return { displayBoard };
+})();
+console.log(gameBoard.getBoard());
+domDisplay.displayBoard(gameBoard.getBoard());
 // gameController.startGame();
